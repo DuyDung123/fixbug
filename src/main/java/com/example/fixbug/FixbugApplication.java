@@ -1,7 +1,9 @@
 package com.example.fixbug;
 
 import com.example.fixbug.api.mail.IMailService;
+import com.example.fixbug.api.mail.response.ListEmailResponse;
 import com.example.fixbug.api.mail.response.MailRefreshTokenResponse;
+import com.example.fixbug.api.mail.response.MessageEmailResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
 import com.example.fixbug.objects.EmailObject;
@@ -12,10 +14,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import retrofit2.Call;
 
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.search.ComparisonTerm;
 import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
 import javax.mail.search.SentDateTerm;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +40,7 @@ public class FixbugApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
        //readMail();
         //refreshToken();
-        readMail1();
+        //readMail1();
         //getStringOrder(content,"商品名");
 //        for (int i = 0; i<= 5;i++){
 //            String str = DesignSingleton.getInstance().callStr(i);
@@ -44,8 +50,65 @@ public class FixbugApplication implements CommandLineRunner {
 //                i = 0;
 //            }
 //        }
-
+        String token = "Bearer ya29.A0ARrdaM8eRRf9u-o7AuvG2h_W2PUkmN4SIxFVxVwl45Tq9QB6xdpCB6Tsvi4gv_xhmqE3jxJVDWgSLwjKp4JQnUpZZIxxnmM1A4Lalz3ZnQnRP37Rqn4ODW9YkqL0-BhvhJzDQQSPh1uNWVaeEy1vaNgYU3aS";
+        readMailTokenApi("dinhvandung791@gmail.com", token, 1642417367, System.currentTimeMillis());
     }
+
+    private void readMailTokenApi(String email, String token, long after, long before){
+        String q = "in:inbox after:" +after + " before:" + before;
+        Map<String, String> map = new HashMap<>();
+        map.put("labelIds","INBOX");
+        map.put("q",q);
+        final ListEmailResponse[] listEmailResponse = {new ListEmailResponse()};
+        RequestHelper.executeSyncRequest(IMailService.SERVICE_READ_EMAIL.getListEmail(token, email, map), new ResponseAPI<ListEmailResponse>() {
+            @Override
+            public void onSuccess(ListEmailResponse response, int code) {
+                for (ListEmailResponse.Message message : response.getMessages()){
+                    RequestHelper.executeSyncRequest(IMailService.SERVICE_READ_EMAIL.getMessageEmail(token, email, message.getId()), new ResponseAPI<MessageEmailResponse>() {
+                        @Override
+                        public void onSuccess(MessageEmailResponse response, int code) {
+                            MessageEmailResponse.Body data = response.getPayload().getParts().get(1).getBody();
+                        }
+
+                        @Override
+                        public void onFailure(int code, String message) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+
+        //System.out.print(listEmailResponse[0].getMessages().get(0).getId());
+    }
+
+
+    private static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) {
+        String result = "";
+        try{ int count = mimeMultipart.getCount();
+            for (int i = 0; i < count; i++) {
+                BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+                if (bodyPart.isMimeType("text/plain")) {
+                    result = result + "\n" + bodyPart.getContent();
+                    break; // without break same text appears twice in my tests
+                } else if (bodyPart.isMimeType("text/html")) {
+                    String html = (String) bodyPart.getContent();
+                    result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
+                } else if (bodyPart.getContent() instanceof MimeMultipart) {
+                    result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
+                }
+            }
+            return result;
+        }catch (MessagingException | IOException e){
+            return result;
+        }
+    }
+
 
 
     private void refreshToken(){

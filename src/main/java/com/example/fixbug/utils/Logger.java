@@ -1,7 +1,5 @@
 package com.example.fixbug.utils;
 
-import javafx.scene.web.WebEngine;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -62,7 +60,6 @@ public class Logger {
         }
     }
 
-    private WebEngine webEngine;
 
     private Logger() {
         //no instance
