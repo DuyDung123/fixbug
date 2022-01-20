@@ -1,0 +1,6 @@
+2022-01-05 20:00:24 INFO  - #readEmail length: dinhvandung791@gmail.com - 13
+2022-01-05 20:00:24 INFO  - #readEmail parse ok: dinhvandung791@gmail.com
+2022-01-05 20:00:46 INFO  - #readEmail close ok: dinhvandung791@gmail.com
+2022-01-05 20:22:34 INFO  - #readEmail length: dinh66539@gmail.com - 2
+2022-01-05 20:22:35 INFO  - #readEmail parse ok: dinh66539@gmail.com
+2022-01-05 20:23:07 INFO  - #readEmail close ok: dinh66539@gmail.com
