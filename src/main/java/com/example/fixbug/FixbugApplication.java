@@ -7,26 +7,23 @@ import com.example.fixbug.api.mail.response.MessageEmailResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
 import com.example.fixbug.objects.EmailObject;
-import com.example.fixbug.singleton.DesignSingleton;
 import com.example.fixbug.utils.EmailModel;
+import com.example.fixbug.utils.EmailUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import retrofit2.Call;
 
 import javax.mail.BodyPart;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.search.ComparisonTerm;
 import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
-import javax.mail.search.SentDateTerm;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import org.apache.commons.codec.binary.Base64;
 
 @SpringBootApplication
 public class FixbugApplication implements CommandLineRunner {
@@ -50,7 +47,7 @@ public class FixbugApplication implements CommandLineRunner {
 //                i = 0;
 //            }
 //        }
-        String token = "Bearer ya29.A0ARrdaM8eRRf9u-o7AuvG2h_W2PUkmN4SIxFVxVwl45Tq9QB6xdpCB6Tsvi4gv_xhmqE3jxJVDWgSLwjKp4JQnUpZZIxxnmM1A4Lalz3ZnQnRP37Rqn4ODW9YkqL0-BhvhJzDQQSPh1uNWVaeEy1vaNgYU3aS";
+        String token = "Bearer ya29.A0ARrdaM-KLTS-G11AIzNeuqoWevEKartQACXh5EXFFyuvrIJnw_KhJxxEc7-yoen7pDAgOK_0jp9n5z99UZSPDbp0R5lGKQZQY7B-4rETUTCqoWYVjyv1OSHMwzaxca-x2hCuw8i4rAeQ4sBl7zH34mUJxls2";
         readMailTokenApi("dinhvandung791@gmail.com", token, 1642417367, System.currentTimeMillis());
     }
 
@@ -67,7 +64,12 @@ public class FixbugApplication implements CommandLineRunner {
                     RequestHelper.executeSyncRequest(IMailService.SERVICE_READ_EMAIL.getMessageEmail(token, email, message.getId()), new ResponseAPI<MessageEmailResponse>() {
                         @Override
                         public void onSuccess(MessageEmailResponse response, int code) {
-                            MessageEmailResponse.Body data = response.getPayload().getParts().get(1).getBody();
+                            String data = response.getPayload().getParts().get(1).getBody().getData();
+                            byte[] valueDecoded = Base64.decodeBase64(data.getBytes());
+                            String res =  new String(valueDecoded);
+                            EmailObject emailObject = EmailUtils.getTextFromMessage(response.getPayload());
+                            System.out.println(emailObject.getContent());
+                            System.out.println("---------------------------------------------------------");
                         }
 
                         @Override
@@ -87,27 +89,6 @@ public class FixbugApplication implements CommandLineRunner {
         //System.out.print(listEmailResponse[0].getMessages().get(0).getId());
     }
 
-
-    private static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) {
-        String result = "";
-        try{ int count = mimeMultipart.getCount();
-            for (int i = 0; i < count; i++) {
-                BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-                if (bodyPart.isMimeType("text/plain")) {
-                    result = result + "\n" + bodyPart.getContent();
-                    break; // without break same text appears twice in my tests
-                } else if (bodyPart.isMimeType("text/html")) {
-                    String html = (String) bodyPart.getContent();
-                    result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
-                } else if (bodyPart.getContent() instanceof MimeMultipart) {
-                    result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
-                }
-            }
-            return result;
-        }catch (MessagingException | IOException e){
-            return result;
-        }
-    }
 
 
 

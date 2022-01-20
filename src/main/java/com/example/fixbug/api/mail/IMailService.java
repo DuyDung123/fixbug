@@ -21,6 +21,6 @@ public interface IMailService {
     @GET("/gmail/v1/users/{email}/messages")
     Call<ListEmailResponse> getListEmail(@Header("Authorization") String token, @Path("email") String email, @QueryMap Map<String,String> map);
 
-    @GET("/gmail/v1/users/{email}/messages{id}?format=full")
+    @GET("/gmail/v1/users/{email}/messages/{id}?format=full")
     Call<MessageEmailResponse> getMessageEmail(@Header("Authorization") String token, @Path("email") String email, @Query("id") String id);
 }

@@ -10,7 +10,7 @@ public class MessageEmailResponse {
     private Payload payload;
     private int sizeEstimate;
     private String historyId;
-    private String internalDate;
+    private long internalDate;
 
     public String getId() {
         return id;
@@ -40,13 +40,21 @@ public class MessageEmailResponse {
         return historyId;
     }
 
-    public String getInternalDate() {
+    public long getInternalDate() {
         return internalDate;
     }
 
     public static class Header{
         private String name;
         private String value;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 
     public static class Body{
