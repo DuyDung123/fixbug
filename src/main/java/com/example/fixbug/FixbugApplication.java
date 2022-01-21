@@ -35,7 +35,7 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-       //readMail();
+       readMail();
         //refreshToken();
         //readMail1();
         //getStringOrder(content,"商品名");
@@ -67,8 +67,8 @@ public class FixbugApplication implements CommandLineRunner {
                             String data = response.getPayload().getParts().get(1).getBody().getData();
                             byte[] valueDecoded = Base64.decodeBase64(data.getBytes());
                             String res =  new String(valueDecoded);
-                            EmailObject emailObject = EmailUtils.getTextFromMessage(response.getPayload());
-                            System.out.println(emailObject.getContent());
+                            //EmailObject emailObject = EmailUtils.getTextFromMessage(response.getPayload());
+                            //System.out.println(emailObject.getContent());
                             System.out.println("---------------------------------------------------------");
                         }
 
@@ -141,7 +141,7 @@ public class FixbugApplication implements CommandLineRunner {
         String email1 = "dinh66539@gmail.com";
         String email2 = "huannvtd98@gmail.com";
         String email3 = "thomn0632@gmail.com";
-        String password = "wpksfzixssntnyjy";
+        String password = "wpksfzixssntnyjys";
         String token = "ya29.A0ARrdaM_Jongx6Ucdf256XRoQ4p3fs-xQyt-klUHvMx0T739-V2mCmlCT_4zBnZ-Bupjn8YFUwz-3DFpheLJp2_gkAK_I_UfFGMI3Fy00iDUkQuOn573zW00Uo_3VcFK5qVSTW01Jepd8jQM3-OihxPf7SJBE";
         String token1 = "ya29.A0ARrdaM8jZfiXTJH-oThePeX9dwCmbPORoTxRdaq-nl9iAgYYrBP8o9jImm44hFgvXyuGrL5H-qMBtyWYpOdL-0fJ7ZU5q70bYfB5B4SoxV615qOPd-CtPCca-NG84-73kO8e9pve-NTwe0jmfCFcn9V1XE_R";
         String token2 = "ya29.A0ARrdaM-5HXtla1XaBiD8RI0K1rcJV8xmvCdVovu_Z0glxEnrI4Myl7OD7FyKvQ0JzDnC7lmLs1oe_F2oCMOn3c-tau-yiH9ZgcsTBqEQ8tgMUF9mgu9PHoIlp2luRKN50EnQWKNtu2jG8P-RfKMKa4IBlVRZxA";
@@ -151,7 +151,7 @@ public class FixbugApplication implements CommandLineRunner {
         SearchTerm startDateTearm = new ReceivedDateTerm(ComparisonTerm.GE, lastDate);
 //        EmailModel.connectToImap(host, 993, email, token, true);
 //        List<EmailObject> emailObjects = EmailModel.readEmailPassword(host,"993", email, password, startDateTearm, true);
-        List<EmailObject> emailObjects = EmailModel.readEmail(host ,port, email, password, token, startDateTearm, (mess, e)->{
+        List<EmailObject> emailObjects = EmailModel.readEmail(1,host ,port, email, password, null, startDateTearm, (mess, e)->{
             System.out.println(mess);
         });
         for (EmailObject item : emailObjects){
