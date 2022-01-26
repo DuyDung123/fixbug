@@ -1,32 +1,32 @@
 package com.example.fixbug;
 
+import com.example.fixbug.api.EmailServiceAPI;
 import com.example.fixbug.api.mail.IMailService;
-import com.example.fixbug.api.mail.response.ListEmailResponse;
 import com.example.fixbug.api.mail.response.MailRefreshTokenResponse;
-import com.example.fixbug.api.mail.response.MessageEmailResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
 import com.example.fixbug.objects.EmailObject;
 import com.example.fixbug.utils.EmailModel;
-import com.example.fixbug.utils.EmailUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.search.ComparisonTerm;
 import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
-import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.*;
-import org.apache.commons.codec.binary.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @SpringBootApplication
 public class FixbugApplication implements CommandLineRunner {
+
+    @Autowired
+    EmailServiceAPI emailServiceAPI;
 
     public static void main(String[] args) {
         SpringApplication.run(FixbugApplication.class, args);
@@ -35,7 +35,7 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-       readMail();
+       //readMail();
         //refreshToken();
         //readMail1();
         //getStringOrder(content,"商品名");
@@ -47,46 +47,17 @@ public class FixbugApplication implements CommandLineRunner {
 //                i = 0;
 //            }
 //        }
-        String token = "Bearer ya29.A0ARrdaM-KLTS-G11AIzNeuqoWevEKartQACXh5EXFFyuvrIJnw_KhJxxEc7-yoen7pDAgOK_0jp9n5z99UZSPDbp0R5lGKQZQY7B-4rETUTCqoWYVjyv1OSHMwzaxca-x2hCuw8i4rAeQ4sBl7zH34mUJxls2";
+        String token = "ya29.A0ARrdaM9-IzoJHFQTTPIzXv-_zdUVxAO77uTXapZEyxJVlv03JEA048Xe85MMq_FL_xYL6atr6airHGepJsxVFbMCAe8QTDdbcMEFDmklBoZLWx8LFwV4UVGQiPdJOYA0gWPzNbSICpytEf1iobKJEBMyLR-h";
         readMailTokenApi("dinhvandung791@gmail.com", token, 1642417367, System.currentTimeMillis());
     }
 
     private void readMailTokenApi(String email, String token, long after, long before){
-        String q = "in:inbox after:" +after + " before:" + before;
-        Map<String, String> map = new HashMap<>();
-        map.put("labelIds","INBOX");
-        map.put("q",q);
-        final ListEmailResponse[] listEmailResponse = {new ListEmailResponse()};
-        RequestHelper.executeSyncRequest(IMailService.SERVICE_READ_EMAIL.getListEmail(token, email, map), new ResponseAPI<ListEmailResponse>() {
-            @Override
-            public void onSuccess(ListEmailResponse response, int code) {
-                for (ListEmailResponse.Message message : response.getMessages()){
-                    RequestHelper.executeSyncRequest(IMailService.SERVICE_READ_EMAIL.getMessageEmail(token, email, message.getId()), new ResponseAPI<MessageEmailResponse>() {
-                        @Override
-                        public void onSuccess(MessageEmailResponse response, int code) {
-                            String data = response.getPayload().getParts().get(1).getBody().getData();
-                            byte[] valueDecoded = Base64.decodeBase64(data.getBytes());
-                            String res =  new String(valueDecoded);
-                            //EmailObject emailObject = EmailUtils.getTextFromMessage(response.getPayload());
-                            //System.out.println(emailObject.getContent());
-                            System.out.println("---------------------------------------------------------");
-                        }
 
-                        @Override
-                        public void onFailure(int code, String message) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-
-            }
-        });
-
-        //System.out.print(listEmailResponse[0].getMessages().get(0).getId());
+        List<EmailObject> emailObjects = emailServiceAPI.getListEmail(token, email, after, before, null);
+        for (EmailObject item: emailObjects){
+            String orderNumber = getStringOrder(item.getContent(), "[注文番号] ");
+            System.out.println(orderNumber);
+        }
     }
 
 
@@ -166,30 +137,38 @@ public class FixbugApplication implements CommandLineRunner {
 
     }
 
-    String content = "メルカリShopsをご利用いただきありがとうございます。下記の商品が購入されました。商品の発送をお願いします。\n" +
+    String content = "\n" +
+            "古賀 郁子 様\n" +
             "\n" +
-            "▼商品情報\n" +
-            "注文番号 : order_abH9RUTiBqujEHLKwjdz2a\n" +
-            "商品名 : 新品Vignac 4本セット ネクタイピン メンズ ファッション シンプル 日常\n" +
-            "商品価格 : ¥2,434\n" +
+            "この度は楽天市場内のショップ「e.Zeeee」をご利用いただきまして、誠にありがとうございます。\n" +
             "\n" +
-            "▼配送先情報\n" +
-            "購入者の配送先情報は以下のリンクよりご確認ください。\n" +
-            "購入者の配送先情報を確認する\n" +
-            "※ご注文の詳細はショップ管理画面の取引一覧からご確認いただけます\n" +
-            "※ご注文の確認にはメルカリアプリのダウンロードが必要です\n" +
-            "※取引一覧へは以下のガイドをご確認ください\n" +
-            "https://merc.li/KdY2vU9Ma\n" +
+            "2021/11/10にお客様からのご入金の確認ができました。\n" +
             "\n" +
-            "※お問い合わせの際はショップ管理画面「お問い合わせ」からお願いいたします\n" +
+            "------------------------------------------------------------\n" +
+            "■ご注文内容\n" +
+            "------------------------------------------------------------\n" +
+            "[注文番号]  369456-20220112-00010746\n" +
+            "[注文日時]  2021/11/10 10:31:07\n" +
+            "[お支払い金額]    5,000円\n" +
+            "------------------------------------------------------------\n" +
             "\n" +
-            "※本メールを含む重要なメールは、配信停止いただけません\n" +
-            "※このメールアドレスは送信専用です。ご返信いただいても対応できませんので、ご了承ください\n" +
+            "【ご注意】\n" +
+            "注文内容の変更やキャンセル、配送に関するお問い合わせは、ショップまでご連絡ください。\n" +
+            "=====================================================\n" +
+            "■ ショップ名 ： e.Zeeee\n" +
+            "■ ショップURL： https://www.rakuten.co.jp/ezeeee/\n" +
+            "■ 問い合わせフォーム ：\n" +
+            "https://ask.step.rakuten.co.jp/inquiry-form/?on=369456-20211110-00068808&ms=702\n" +
+            "■ 電話 ： 050-3702-1194\n" +
+            "=====================================================\n" +
             "\n" +
-            "ーーーーーーーーーー\n" +
-            "株式会社ソウゾウ\n" +
-            "ーーーーーーーーーー\n" +
-            "※株式会社ソウゾウはメルカリShopsを運営しています ";
+            "お支払いに関するお問い合わせは、楽天市場までご連絡ください。\n" +
+            "※本ご注文に心あたりが無い場合には、大変お手数をおかけしますが、上記ショップならびに楽天市場までお問い合わせください。\n" +
+            "\n" +
+            "────────楽天市場 ・ お支払いに関するご質問はこちら──────────\n" +
+            "■楽天市場 お客様サポートセンター\n" +
+            "https://chat.ichiba.faq.rakuten.co.jp/rnt_chat_ref/100/Payment\n" +
+            "※表示された画面にお困りごとをご入力頂くか、「オペレーターとチャットしたい」など、ご希望のご連絡方法をご入力ください。\n";
 
     private static String getStringOrder(String input, String firstName) {
         int index = input.indexOf(firstName) + firstName.length();
