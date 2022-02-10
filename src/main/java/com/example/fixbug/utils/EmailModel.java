@@ -239,7 +239,7 @@ public class EmailModel {
         return null;
     }
 
-    public static List<EmailObject> readEmail(String host, String port, String email, String pass, String token, SearchTerm searchTerm, ErrorCallback callback) {
+    public static List<EmailObject> readEmail(int time, String host, String port, String email, String pass, String token, SearchTerm searchTerm, ErrorCallback callback) {
         try {
             Properties props = new Properties();
             props.put("mail.imap.ssl.enable", "true");
@@ -277,8 +277,14 @@ public class EmailModel {
             }).start();
             return mailList;
         } catch (Exception e) {
-            System.out.println(e.fillInStackTrace());
-            callback.error(e.getMessage(), e);
+            //System.out.println(e.fillInStackTrace());
+            if (time <= 5){
+                time++;
+                readEmail(time, host, port, email, pass, token, searchTerm, callback);
+                return new ArrayList<>();
+            }else {
+                callback.error(e.getMessage(), e);
+            }
             //logger.error(String.format("#readEmail Exception email: %s - error: %s ", email, e));
         }
         return new ArrayList<>();

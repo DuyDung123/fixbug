@@ -1,2 +1,0 @@
-2022-01-07 15:29:32 INFO  - RequestHelper - #executeSyncRequest url: https://oauth2.googleapis.com/token - code: 200
-2022-01-07 15:31:23 INFO  - RequestHelper - #executeSyncRequest url: https://oauth2.googleapis.com/token - code: 200
