@@ -107,7 +107,7 @@ public class FixbugApplication implements CommandLineRunner {
         SearchTerm startDateTearm = new ReceivedDateTerm(ComparisonTerm.GE, lastDate);
 //        EmailModel.connectToImap(host, 993, email, token, true);
 //        List<EmailObject> emailObjects = EmailModel.readEmailPassword(host,"993", email, password, startDateTearm, true);
-        List<EmailObject> emailObjects = EmailModel.readEmail(host ,port, email, password, token, startDateTearm, (mess, e)->{
+        List<EmailObject> emailObjects = EmailModel.readEmail(1, host ,port, email, password, token, startDateTearm, (mess, e)->{
             System.out.println(mess);
         });
         for (EmailObject item : emailObjects){
