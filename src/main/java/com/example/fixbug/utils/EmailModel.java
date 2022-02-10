@@ -119,7 +119,7 @@ public class EmailModel {
             store.connect(host, email, password);
 
             // create the inbox object and open it
-            Folder inbox = store.getFolder("facebook");
+            Folder inbox = store.getFolder("Inbox");
             inbox.open(Folder.READ_ONLY);
             Message[] messagess = inbox.search(condition);
 

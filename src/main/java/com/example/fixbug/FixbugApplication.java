@@ -17,10 +17,7 @@ import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
 import javax.mail.search.SentDateTerm;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootApplication
 public class FixbugApplication implements CommandLineRunner {
@@ -44,7 +41,12 @@ public class FixbugApplication implements CommandLineRunner {
 //                i = 0;
 //            }
 //        }
+        //String auth = getRakutenAuth("SP379498_ikU4SKB5aWUKGpa4", "SL379498_jufp2Ju9qlyFobAa");
+        //System.out.println(auth);
+    }
 
+    public String getRakutenAuth(String apiKey, String clientSecretRakuten) {
+        return "ESA " + Base64.getEncoder().encodeToString((apiKey + ":" + clientSecretRakuten).getBytes());
     }
 
 
@@ -70,11 +72,11 @@ public class FixbugApplication implements CommandLineRunner {
     }
 
     private void readMail1(){
-        String host = "imap.gmail.com";
+        String host = "webmail11.onamae.ne.jp";
         String port = "993";
         String mailStoreType = "imap";
-        String email = "dinhvandung791@gmail.com";
-        String password = "wpksfzixssntnyjy";
+        String email = "dungdv@watermelon.vn";
+        String password = "Dung@1234";
         Date lastDate = new Timestamp(1642411372);
         SearchTerm startDateTearm = new ReceivedDateTerm(ComparisonTerm.GE, lastDate);
         List<EmailObject> emailObjects = EmailModel.readEmail(host, port, email, password, startDateTearm);
