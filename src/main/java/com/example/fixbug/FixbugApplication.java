@@ -17,10 +17,7 @@ import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
 import javax.mail.search.SentDateTerm;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootApplication
 public class FixbugApplication implements CommandLineRunner {
@@ -32,9 +29,10 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        getRakutenAuth();
        //readMail();
         //refreshToken();
-        readMail1();
+        //readMail1();
         //getStringOrder(content,"商品名");
 //        for (int i = 0; i<= 5;i++){
 //            String str = DesignSingleton.getInstance().callStr(i);
@@ -174,5 +172,13 @@ public class FixbugApplication implements CommandLineRunner {
         if (text == null || text.isEmpty())
             return true;
         return false;
+    }
+
+    public String getRakutenAuth() {
+        String apiKey = "SP379498_ikU4SKB5aWUKGpa4";
+        String clientSecretRakuten = "SL379498_jufp2Ju9qlyFobAa";
+        String res = "ESA " + Base64.getEncoder().encodeToString((apiKey + ":" + clientSecretRakuten).getBytes());
+        System.out.println(res);
+        return res;
     }
 }
