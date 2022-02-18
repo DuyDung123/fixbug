@@ -16,6 +16,12 @@ import javax.mail.search.ComparisonTerm;
 import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
 import javax.mail.search.SentDateTerm;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -29,7 +35,7 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        getRakutenAuth();
+        //getRakutenAuth();
        //readMail();
         //refreshToken();
         //readMail1();
@@ -42,9 +48,47 @@ public class FixbugApplication implements CommandLineRunner {
 //                i = 0;
 //            }
 //        }
+        dowLoadImageFormUrl();
+//        List<Integer> str = new ArrayList<>();
+//        for (int i = 0; i<=10; i++){
+//            str.add(i);
+//            System.out.println(i);
+//        }
+//        test(str);
+//        for (Integer i: str){
+//            System.out.println(i);
+//        }
+    }
+
+    private void dowLoadImageFormUrl(){
+        try {
+            URL url = new URL("https://dev.patdel.watermelon.vn/storage/7/42/UlRUS0oZrZc5Tn2uCfGX0w6SFnwBHdvywFqdWE0f.jpg");
+            InputStream in = new BufferedInputStream(url.openStream());
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            int n = 0;
+            while (-1!=(n=in.read(buf)))
+            {
+                out.write(buf, 0, n);
+            }
+            out.close();
+            in.close();
+            byte[] response = out.toByteArray();
+
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\watermelon\\Desktop\\test\\borrowed_image.jpg");
+            fos.write(response);
+            fos.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
+    private void test(final List<Integer> str){
+        for (int i : str){
+            i++;
+        }
+    }
 
     private void refreshToken(){
         Map<String, String> map = new HashMap<>();
