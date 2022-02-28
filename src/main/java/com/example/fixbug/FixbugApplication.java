@@ -17,10 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.mail.search.ComparisonTerm;
 import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
@@ -42,7 +39,7 @@ public class FixbugApplication implements CommandLineRunner {
         //getStringOrder(content,"商品名");
         //dowLoadImageFormUrl();
 
-        searchItemRakuten(token, "ニット メンズ 無地 純色 おしゃれ 丸首 長袖 秋 冬 春 黒 白 ネイビー グレー セーター メンズセーター 薄手");
+        searchItemRakuten(token, "wss201501b07hzg8xbb");
     }
 
     private void dowLoadImageFormUrl(){
@@ -211,20 +208,18 @@ public class FixbugApplication implements CommandLineRunner {
         return res;
     }
 
-    public static void searchItemRakuten(String token, String itemName){
-        String makeBodySearchItemRakuten = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<request>\n" +
-                "   <itemDeleteRequest>\n" +
-                "       <item>\n" +
-                "           <itemName>" + itemName + "</itemName>\n" +
-                "       </item>\n" +
-                "   </itemDeleteRequest>\n" +
-                "</request>";
-        RequestBody requestBody = RequestBody.create(MediaType.parse("text/xml"), makeBodySearchItemRakuten);
+    public static void searchItemRakuten(String token, String itemUrl){
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("itemUrl", itemUrl);
         RequestHelper.executeSyncRequest(IRakutenService.SERVICE.search(token, requestBody), new ResponseAPI<ResponseBody>() {
             @Override
             public void onSuccess(ResponseBody response, int code) {
                 System.out.printf("onSuccess code: "+ code);
+                try {
+                    System.out.printf("onSuccess code: "+ response.string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
