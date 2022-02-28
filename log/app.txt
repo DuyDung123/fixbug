@@ -1,5 +1,5 @@
-2022-01-21 15:09:46 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Ainbox%20after%3A1642417367%20before%3A1642752583537&labelIds=INBOX - code: 401
-2022-01-21 15:09:46 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Ainbox%20after%3A1642417367%20before%3A1642752583537&labelIds=INBOX - {
+2022-01-26 09:56:55 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643165805555&labelIds=INBOX - code: 401
+2022-01-26 09:56:55 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643165805555&labelIds=INBOX - {
   "error": {
     "code": 401,
     "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
@@ -16,3 +16,337 @@
   }
 }
 
+2022-01-26 09:56:55 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 401 mess: {
+  "error": {
+    "code": 401,
+    "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+    "errors": [
+      {
+        "message": "Invalid Credentials",
+        "domain": "global",
+        "reason": "authError",
+        "location": "Authorization",
+        "locationType": "header"
+      }
+    ],
+    "status": "UNAUTHENTICATED"
+  }
+}
+
+2022-01-26 09:56:55 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643165805555&labelIds=INBOX - EXCEPTION: null
+2022-01-26 09:56:55 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 10:00:20 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643165998486&labelIds=INBOX - code: 200
+2022-01-26 10:00:20 ERROR - RequestHelper - #executeSyncReques Exception: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643165998486&labelIds=INBOX - null
+2022-01-26 10:00:20 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 10:02:18 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643166065518&labelIds=INBOX - code: 200
+2022-01-26 10:02:28 ERROR - RequestHelper - #executeSyncReques Exception: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643166065518&labelIds=INBOX - null
+2022-01-26 10:02:36 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 10:03:13 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643166171325&labelIds=INBOX - code: 200
+2022-01-26 10:03:45 ERROR - RequestHelper - #executeSyncReques Exception: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643166171325&labelIds=INBOX - null
+2022-01-26 10:03:45 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 10:05:13 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Ainbox%20after%3A1642417367%20before%3A1643166292717&labelIds=INBOX - code: 200
+2022-01-26 10:06:17 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Ainbox%20after%3A1642417367%20before%3A1643166357606 - code: 200
+2022-01-26 10:07:12 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643166412155 - code: 200
+2022-01-26 10:07:39 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages/%7Bid%7D?format=full&id=17e941c34fe300a4 - code: 200
+2022-01-26 10:11:49 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=after%3A1642417367%20before%3A1643166685715&labelIds=google - code: 400
+2022-01-26 10:11:53 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=after%3A1642417367%20before%3A1643166685715&labelIds=google - {
+  "error": {
+    "code": 400,
+    "message": "Invalid label: google",
+    "errors": [
+      {
+        "message": "Invalid label: google",
+        "domain": "global",
+        "reason": "invalidArgument"
+      }
+    ],
+    "status": "INVALID_ARGUMENT"
+  }
+}
+
+2022-01-26 10:11:53 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 400 mess: {
+  "error": {
+    "code": 400,
+    "message": "Invalid label: google",
+    "errors": [
+      {
+        "message": "Invalid label: google",
+        "domain": "global",
+        "reason": "invalidArgument"
+      }
+    ],
+    "status": "INVALID_ARGUMENT"
+  }
+}
+
+2022-01-26 10:11:53 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=after%3A1642417367%20before%3A1643166685715&labelIds=google - EXCEPTION: null
+2022-01-26 10:11:53 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 10:12:59 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643166775097 - code: 200
+2022-01-26 10:12:59 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages/%7Bid%7D?format=full&id=17e941c34fe300a4 - code: 200
+2022-01-26 10:40:14 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168387936 - code: 401
+2022-01-26 10:40:14 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168387936 - {
+  "error": {
+    "code": 401,
+    "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+    "errors": [
+      {
+        "message": "Invalid Credentials",
+        "domain": "global",
+        "reason": "authError",
+        "location": "Authorization",
+        "locationType": "header"
+      }
+    ],
+    "status": "UNAUTHENTICATED"
+  }
+}
+
+2022-01-26 10:40:14 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 401 mess: {
+  "error": {
+    "code": 401,
+    "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+    "errors": [
+      {
+        "message": "Invalid Credentials",
+        "domain": "global",
+        "reason": "authError",
+        "location": "Authorization",
+        "locationType": "header"
+      }
+    ],
+    "status": "UNAUTHENTICATED"
+  }
+}
+
+2022-01-26 10:40:14 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168387936 - EXCEPTION: null
+2022-01-26 10:40:14 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 10:43:32 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168606288 - code: 403
+2022-01-26 10:43:32 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168606288 - {
+  "error": {
+    "code": 403,
+    "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+    "errors": [
+      {
+        "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+        "domain": "usageLimits",
+        "reason": "accessNotConfigured",
+        "extendedHelp": "https://console.developers.google.com"
+      }
+    ],
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Google developers console API activation",
+            "url": "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185"
+          }
+        ]
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SERVICE_DISABLED",
+        "domain": "googleapis.com",
+        "metadata": {
+          "consumer": "projects/167534915185",
+          "service": "gmail.googleapis.com"
+        }
+      }
+    ]
+  }
+}
+
+2022-01-26 10:43:32 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 403 mess: {
+  "error": {
+    "code": 403,
+    "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+    "errors": [
+      {
+        "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+        "domain": "usageLimits",
+        "reason": "accessNotConfigured",
+        "extendedHelp": "https://console.developers.google.com"
+      }
+    ],
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Google developers console API activation",
+            "url": "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185"
+          }
+        ]
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SERVICE_DISABLED",
+        "domain": "googleapis.com",
+        "metadata": {
+          "consumer": "projects/167534915185",
+          "service": "gmail.googleapis.com"
+        }
+      }
+    ]
+  }
+}
+
+2022-01-26 10:43:32 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168606288 - EXCEPTION: null
+2022-01-26 10:43:32 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 10:45:14 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168682055 - code: 403
+2022-01-26 10:58:07 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168682055 - {
+  "error": {
+    "code": 403,
+    "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+    "errors": [
+      {
+        "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+        "domain": "usageLimits",
+        "reason": "accessNotConfigured",
+        "extendedHelp": "https://console.developers.google.com"
+      }
+    ],
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Google developers console API activation",
+            "url": "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185"
+          }
+        ]
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SERVICE_DISABLED",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "gmail.googleapis.com",
+          "consumer": "projects/167534915185"
+        }
+      }
+    ]
+  }
+}
+
+2022-01-26 10:58:07 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 403 mess: {
+  "error": {
+    "code": 403,
+    "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+    "errors": [
+      {
+        "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+        "domain": "usageLimits",
+        "reason": "accessNotConfigured",
+        "extendedHelp": "https://console.developers.google.com"
+      }
+    ],
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Google developers console API activation",
+            "url": "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185"
+          }
+        ]
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SERVICE_DISABLED",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "gmail.googleapis.com",
+          "consumer": "projects/167534915185"
+        }
+      }
+    ]
+  }
+}
+
+2022-01-26 10:58:07 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643168682055 - EXCEPTION: null
+2022-01-26 10:58:07 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 11:29:33 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643171327291 - code: 200
+2022-01-26 11:29:49 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages/%7Bid%7D?format=full&id=17e941c34fe300a4 - code: 403
+2022-01-26 11:29:51 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages/%7Bid%7D?format=full&id=17e941c34fe300a4 - {
+  "error": {
+    "code": 403,
+    "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+    "errors": [
+      {
+        "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+        "domain": "usageLimits",
+        "reason": "accessNotConfigured",
+        "extendedHelp": "https://console.developers.google.com"
+      }
+    ],
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Google developers console API activation",
+            "url": "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185"
+          }
+        ]
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SERVICE_DISABLED",
+        "domain": "googleapis.com",
+        "metadata": {
+          "consumer": "projects/167534915185",
+          "service": "gmail.googleapis.com"
+        }
+      }
+    ]
+  }
+}
+
+2022-01-26 11:29:52 ERROR - EmailServiceAPI: #getListEmail getMessageEmail - onFailure email: dinhvandung791@gmail.com codeError: 403 mess: {
+  "error": {
+    "code": 403,
+    "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+    "errors": [
+      {
+        "message": "Gmail API has not been used in project 167534915185 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.",
+        "domain": "usageLimits",
+        "reason": "accessNotConfigured",
+        "extendedHelp": "https://console.developers.google.com"
+      }
+    ],
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Google developers console API activation",
+            "url": "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=167534915185"
+          }
+        ]
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SERVICE_DISABLED",
+        "domain": "googleapis.com",
+        "metadata": {
+          "consumer": "projects/167534915185",
+          "service": "gmail.googleapis.com"
+        }
+      }
+    ]
+  }
+}
+
+2022-01-26 11:29:53 ERROR - RequestHelper - #executeSyncRequest FAILURE: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages/%7Bid%7D?format=full&id=17e941c34fe300a4 - EXCEPTION: null
+2022-01-26 11:29:59 ERROR - EmailServiceAPI: #getListEmail getMessageEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 11:29:59 ERROR - RequestHelper - #executeSyncReques Exception: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643171327291 - null
+2022-01-26 11:29:59 ERROR - EmailServiceAPI: #getListEmail - onFailure email: dinhvandung791@gmail.com codeError: 0 mess: Unknown error.
+2022-01-26 11:37:01 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages?q=in%3Agoogle%20after%3A1642417367%20before%3A1643171796624 - code: 200
+2022-01-26 11:37:07 INFO  - RequestHelper - #executeSyncRequest url: https://www.googleapis.com/gmail/v1/users/dinhvandung791@gmail.com/messages/%7Bid%7D?format=full&id=17e941c34fe300a4 - code: 200

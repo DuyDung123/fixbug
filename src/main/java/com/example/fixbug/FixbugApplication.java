@@ -2,25 +2,25 @@ package com.example.fixbug;
 
 import com.example.fixbug.api.mail.IMailService;
 import com.example.fixbug.api.mail.response.MailRefreshTokenResponse;
+import com.example.fixbug.api.rakuten.IRakutenService;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
 import com.example.fixbug.objects.EmailObject;
-import com.example.fixbug.singleton.DesignSingleton;
 import com.example.fixbug.utils.EmailModel;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import retrofit2.Call;
 
 import javax.mail.search.ComparisonTerm;
 import javax.mail.search.ReceivedDateTerm;
 import javax.mail.search.SearchTerm;
-import javax.mail.search.SentDateTerm;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
@@ -35,29 +35,14 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        //getRakutenAuth();
+        String token = getRakutenAuth();
        //readMail();
         //refreshToken();
         //readMail1();
         //getStringOrder(content,"商品名");
-//        for (int i = 0; i<= 5;i++){
-//            String str = DesignSingleton.getInstance().callStr(i);
-//            System.out.println(str);
-//            Thread.sleep(1000);
-//            if (i == 5) {
-//                i = 0;
-//            }
-//        }
-        dowLoadImageFormUrl();
-//        List<Integer> str = new ArrayList<>();
-//        for (int i = 0; i<=10; i++){
-//            str.add(i);
-//            System.out.println(i);
-//        }
-//        test(str);
-//        for (Integer i: str){
-//            System.out.println(i);
-//        }
+        //dowLoadImageFormUrl();
+
+        searchItemRakuten(token, "ニット メンズ 無地 純色 おしゃれ 丸首 長袖 秋 冬 春 黒 白 ネイビー グレー セーター メンズセーター 薄手");
     }
 
     private void dowLoadImageFormUrl(){
@@ -224,5 +209,28 @@ public class FixbugApplication implements CommandLineRunner {
         String res = "ESA " + Base64.getEncoder().encodeToString((apiKey + ":" + clientSecretRakuten).getBytes());
         System.out.println(res);
         return res;
+    }
+
+    public static void searchItemRakuten(String token, String itemName){
+        String makeBodySearchItemRakuten = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<request>\n" +
+                "   <itemDeleteRequest>\n" +
+                "       <item>\n" +
+                "           <itemName>" + itemName + "</itemName>\n" +
+                "       </item>\n" +
+                "   </itemDeleteRequest>\n" +
+                "</request>";
+        RequestBody requestBody = RequestBody.create(MediaType.parse("text/xml"), makeBodySearchItemRakuten);
+        RequestHelper.executeSyncRequest(IRakutenService.SERVICE.search(token, requestBody), new ResponseAPI<ResponseBody>() {
+            @Override
+            public void onSuccess(ResponseBody response, int code) {
+                System.out.printf("onSuccess code: "+ code);
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                System.out.printf("onFailure code: "+ code + " mess: " + message);
+            }
+        });
     }
 }
