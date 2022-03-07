@@ -3,6 +3,7 @@ package com.example.fixbug;
 import com.example.fixbug.api.mail.IMailService;
 import com.example.fixbug.api.mail.response.MailRefreshTokenResponse;
 import com.example.fixbug.api.rakuten.IRakutenService;
+import com.example.fixbug.api.rakuten.IchibaResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
 import com.example.fixbug.objects.EmailObject;
@@ -10,6 +11,7 @@ import com.example.fixbug.utils.EmailModel;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import org.apache.http.util.TextUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,14 +37,14 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String token = getRakutenAuth();
+        //searchIchiba("1037367918209335278", "10039335", "", 1);
        //readMail();
         //refreshToken();
         //readMail1();
         //getStringOrder(content,"商品名");
         //dowLoadImageFormUrl();
-
-        searchItemRakuten(token, "ニット メンズ 無地 純色 おしゃれ 丸首 長袖 秋 冬 春 黒 白 ネイビー グレー セーター メンズセーター 薄手");
+        String token = getRakutenAuth();
+        //searchItemRakuten(token, "ニット メンズ 無地 純色 おしゃれ 丸首 長袖 秋 冬 春 黒 白 ネイビー グレー セーター メンズセーター 薄手");
     }
 
     private void dowLoadImageFormUrl(){
@@ -230,6 +232,32 @@ public class FixbugApplication implements CommandLineRunner {
             @Override
             public void onFailure(int code, String message) {
                 System.out.printf("onFailure code: "+ code + " mess: " + message);
+            }
+        });
+    }
+
+    public static void searchIchiba(String appId, String keyword, String categoryId, int pageId) {
+        Map<String, String> query = new HashMap<>();
+        query.put("format", "json");
+        query.put("applicationId", "" + appId);
+        query.put("keyword", "" + keyword);
+        query.put("availability", "1");
+        query.put("page", "" + pageId);
+        query.put("sort", "+itemPrice");
+        query.put("NGKeyword", "中古 円還元 フレッツ転用 コラボ光変更 延長保証 修理保証 福袋 キャッシュバック 乗換 レンタル");
+        query.put("minPrice", "100");
+        if (!TextUtils.isEmpty(categoryId)) {
+            query.put("genreId", categoryId);
+        }
+        RequestHelper.executeSyncRequest(IRakutenService.SERVICEDEV.searchIchiba(query), new ResponseAPI<IchibaResponse>() {
+            @Override
+            public void onSuccess(IchibaResponse response, int code) {
+
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
             }
         });
     }
