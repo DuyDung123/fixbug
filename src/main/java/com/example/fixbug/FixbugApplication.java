@@ -5,11 +5,12 @@ import com.example.fixbug.api.mail.response.MailRefreshTokenResponse;
 import com.example.fixbug.api.rakuten.IRakutenService;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
+import com.example.fixbug.fcm.FCMService;
+import com.example.fixbug.fcm.PnsRequest;
 import com.example.fixbug.objects.EmailObject;
 import com.example.fixbug.utils.EmailModel;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,14 +33,32 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String token = getRakutenAuth();
+
+//        System.out.println("Hello World");
+//        float gia = 2670.00f;
+//        int gia2 = (int)gia;
+//        System.out.println(gia);
+//        System.out.println(gia2);
+//
+//        String token = getRakutenAuth();
+
+        String str = sendSampleNotification();
+        System.out.println(str);
        //readMail();
         //refreshToken();
         //readMail1();
         //getStringOrder(content,"商品名");
         //dowLoadImageFormUrl();
 
-        searchItemRakuten(token, "wss201501b07hzg8xbb");
+//        searchItemRakuten(token, "wss201501b07hzg8xbb");
+    }
+
+    @Autowired
+    private FCMService fcm;
+
+    public String sendSampleNotification() {
+        PnsRequest pnsRequest = new PnsRequest();
+        return fcm.pushNotification(pnsRequest);
     }
 
     private void dowLoadImageFormUrl(){
