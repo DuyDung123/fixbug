@@ -7,7 +7,7 @@ import com.example.fixbug.api.rakuten.IchibaResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
 import com.example.fixbug.fcm.FCMService;
-import com.example.fixbug.fcm.PnsRequest;
+import com.example.fixbug.fcm.FirebaseMessagingObject;
 import com.example.fixbug.objects.EmailObject;
 import com.example.fixbug.utils.EmailModel;
 import okhttp3.ResponseBody;
@@ -33,6 +33,9 @@ public class FixbugApplication implements CommandLineRunner {
     }
 
 
+    @Autowired
+    FCMService fcmService;
+
     @Override
     public void run(String... args) throws Exception {
         //searchIchiba("1037367918209335278", "10039335", "", 1);
@@ -41,8 +44,10 @@ public class FixbugApplication implements CommandLineRunner {
         //readMail1();
         //getStringOrder(content,"商品名");
         //dowLoadImageFormUrl();
-        String token = getRakutenAuth();
+        //String token = getRakutenAuth();
         //searchItemRakuten(token, "ニット メンズ 無地 純色 おしゃれ 丸首 長袖 秋 冬 春 黒 白 ネイビー グレー セーター メンズセーター 薄手");
+        //fcmService.pushNotification(new PnsRequest());
+        fcmService.sendNotification();
     }
 
     private void dowLoadImageFormUrl(){
