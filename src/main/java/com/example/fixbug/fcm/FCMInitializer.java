@@ -20,8 +20,13 @@ public class FCMInitializer {
     @PostConstruct
     public void initialize() {
         try {
+            FileInputStream serviceAccount = new FileInputStream(firebaseConfigPath);
+
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())).build();
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .build();
+
+            //FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())).build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
             }
