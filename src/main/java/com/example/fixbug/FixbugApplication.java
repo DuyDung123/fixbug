@@ -1,17 +1,31 @@
 package com.example.fixbug;
 
+import com.example.fixbug.api.line.ILineService;
+import com.example.fixbug.api.line.LineStepLmeModel;
+import com.example.fixbug.api.line.reponse.CsvExport;
 import com.example.fixbug.api.mail.IMailService;
 import com.example.fixbug.api.mail.response.MailRefreshTokenResponse;
 import com.example.fixbug.api.rakuten.IRakutenService;
 import com.example.fixbug.api.rakuten.IchibaResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
-import com.example.fixbug.fcm.FCMService;
-import com.example.fixbug.fcm.FirebaseMessagingObject;
+import com.example.fixbug.elasticsearch.EsService;
+import com.example.fixbug.patternbridge.demo.DemoBridge;
+import com.example.fixbug.google.GoogleSheets;
 import com.example.fixbug.objects.EmailObject;
+import com.example.fixbug.patternbuilder.fastfoodstore.director.Client;
 import com.example.fixbug.utils.EmailModel;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.auth.oauth2.GoogleCredentials;
 import okhttp3.ResponseBody;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import com.coupang.openapi.sdk.Hmac;
+import org.apache.http.util.EntityUtils;
 import org.apache.http.util.TextUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -32,22 +46,146 @@ public class FixbugApplication implements CommandLineRunner {
         SpringApplication.run(FixbugApplication.class, args);
     }
 
-
-    @Autowired
-    FCMService fcmService;
-
     @Override
     public void run(String... args) throws Exception {
-        //searchIchiba("1037367918209335278", "10039335", "", 1);
-       //readMail();
-        //refreshToken();
-        //readMail1();
-        //getStringOrder(content,"商品名");
-        //dowLoadImageFormUrl();
-        //String token = getRakutenAuth();
-        //searchItemRakuten(token, "ニット メンズ 無地 純色 おしゃれ 丸首 長袖 秋 冬 春 黒 白 ネイビー グレー セーター メンズセーター 薄手");
-        //fcmService.pushNotification(new PnsRequest());
-        fcmService.sendNotification();
+        String spreadsheetId = "1EdxrJH_mltN14RPqGEK2h7Ocogp6y7V6SKVO5egbI_4";
+//        ValueRange data = GoogleSheets.getData("1EdxrJH_mltN14RPqGEK2h7Ocogp6y7V6SKVO5egbI_4", "A1:Z1000");
+        CsvExport response = new LineStepLmeModel().getListDataExport("1559", "hoangthangdt2@gmail.com");
+        GoogleCredentials credentials = GoogleSheets.getAuthorize();
+        if (response.getData() != null) {
+            List<Object> headers = response.getData().getHeads().get(1);
+            if (headers != null) {
+                ValueRange data = GoogleSheets.getData(credentials, spreadsheetId, "A1:Z1");
+                if (data == null || data.getValues() == null || data.getValues().isEmpty()) {
+                    //title
+                    GoogleSheets.fillData(credentials, spreadsheetId, headers);
+                } else {
+                    if (data.getValues().get(data.getValues().size() -1).size() != headers.size()) {
+                        GoogleSheets.clearAllData(credentials, spreadsheetId, "A1:Z1000");
+                        GoogleSheets.fillData(credentials, spreadsheetId, headers);
+                    }
+                }
+            }
+            List<List<Object>> listRowCsv = response.getData().getDataExport();
+            if (listRowCsv != null) {
+                ValueRange data = GoogleSheets.getData(credentials, spreadsheetId, "A2:Z1000");
+                if (data == null || data.getValues() == null || data.getValues().isEmpty()) {
+                    for (int i = 0; i < listRowCsv.size(); i++) {
+                        for (int j = 0; j < listRowCsv.get(i).size(); j++) { // column
+                            int row = i + 2; //tránh cái tiêu đề ra
+                            int column = j + 1;
+                            GoogleSheets.fillData(credentials, spreadsheetId, row, column, listRowCsv.get(i).get(j) == null ? null : listRowCsv.get(i).get(j) + "");
+                        }
+                    }
+                } else {
+                    int rowNumberGoogleSheet = data.getValues().size();
+                    int nextRowNew = data.getValues().size();
+                    for (int i = 0; i < listRowCsv.size(); i++) { //row
+                        int row = i + 2;
+                        boolean check = false;
+                        int j;
+                        for (j = 0; j < data.getValues().size(); j++) {
+                            if (data.getValues().get(j).get(0).equals(listRowCsv.get(i).get(0))) {
+                                check = true;
+                                break;
+                            }
+                        }
+                        if (check) {
+                            for (int k = 0; k < listRowCsv.get(i).size(); k++) {
+                                if (!listRowCsv.get(i).get(k).toString().equals(data.getValues().get(i).get(k).toString())) {
+                                    int column = k + 1;
+                                    GoogleSheets.fillData(credentials, spreadsheetId, row, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
+                                }
+                            }
+                        } else {
+                            for (int k = 0; k < listRowCsv.get(i).size(); k++) {
+                                int rowNew = nextRowNew + 2;
+                                int column = k + 1;
+                                GoogleSheets.fillData(credentials, spreadsheetId, rowNew, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
+                            }
+                            nextRowNew ++;
+                        }
+                    }
+                }
+            }
+            System.out.println("end");
+        }
+    }
+
+    private static final String HOST = "api-gateway.coupang.com";
+    private static final int PORT = 443;
+    private static final String SCHEMA = "https";
+    //replace with your own accessKey
+    private static final String ACCESS_KEY = "92e6a793-384e-4680-9eb7-0fa1ae911b92";
+    //replace with your own secretKey
+    private static final String SECRET_KEY = "d381156e3b8de94668b9e0067c90cb33302b3803";
+
+    public static void testAPI(String mt, String pathOutput){
+        System.out.println("run");
+        String method = mt;
+        //replace with your own vendorId
+        String path = pathOutput;
+        CloseableHttpClient client = null;
+        try {
+            //create client
+            client = HttpClients.createDefault();
+            //build uri
+            URIBuilder uriBuilder = new URIBuilder()
+                    .setPath(path);
+
+            /********************************************************/
+            //authorize, demonstrate how to generate hmac signature here
+            String authorization = Hmac.generate(method, uriBuilder.build().toString(), SECRET_KEY, ACCESS_KEY);
+            //print out the hmac key
+            System.out.println(authorization);
+            /********************************************************/
+
+            uriBuilder.setScheme(SCHEMA).setHost(HOST).setPort(PORT);
+            HttpGet get = new HttpGet(uriBuilder.build().toString());
+            /********************************************************/
+            // set header, demonstarte how to use hmac signature here
+            get.addHeader("Authorization", authorization);
+            /********************************************************/
+            get.addHeader("content-type", "application/json");
+            CloseableHttpResponse response = null;
+            try {
+                //execute get request
+                response = client.execute(get);
+                //print result
+                System.out.println("status code:" + response.getStatusLine().getStatusCode());
+                System.out.println("status message:" + response.getStatusLine().getReasonPhrase());
+                HttpEntity entity = response.getEntity();
+                System.out.println("result:" + EntityUtils.toString(entity));
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (response != null) {
+                    try {
+                        response.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static int countByteJapan(String input) {
+        try {
+            return input.replaceAll("\t", "").getBytes("SHIFT-JIS").length;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private void dowLoadImageFormUrl(){
@@ -102,11 +240,11 @@ public class FixbugApplication implements CommandLineRunner {
     }
 
     private void readMail1(){
-        String host = "imap.gmail.com";
+        String host = "mail11.onamae.ne.jp";
         String port = "993";
         String mailStoreType = "imap";
-        String email = "dinhvandung791@gmail.com";
-        String password = "wpksfzixssntnyjy";
+        String email = "test@melonmazon.net";
+        String password = "test201501!";
         Date lastDate = new Timestamp(1642411372);
         SearchTerm startDateTearm = new ReceivedDateTerm(ComparisonTerm.GE, lastDate);
         List<EmailObject> emailObjects = EmailModel.readEmail(host, port, email, password, startDateTearm);

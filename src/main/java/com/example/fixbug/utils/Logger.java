@@ -49,6 +49,10 @@ public class Logger {
         log4j.error(getLogMessage(tag, message));
     }
 
+    public static void error(String tag, String message, Throwable throwable) {
+        log4j.error(getLogMessage(tag, message), throwable);
+    }
+
 
     public static String getLogMessage(String tag, String message) {
         return String.format("%s - %s", tag, message);
