@@ -17,29 +17,37 @@ import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpHeaders;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class GoogleSheets {
-    private static final String TAG = GoogleSheets.class.getSimpleName();
-    public static GoogleCredentials getAuthorize() {
+public class GoogleSheetsModel {
+    private static final String TAG = GoogleSheetsModel.class.getSimpleName();
+    public GoogleCredentials getAuthorize() {
         try {
-            String pathFileClientSecret = "E:\\google-sheet_dung.json";
+            String pathFileClientSecret = "E:\\google-sheet.json";
             FileInputStream serviceAccount = new FileInputStream(pathFileClientSecret);
             return GoogleCredentials.fromStream(serviceAccount).createScoped(SheetsScopes.all());
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            Logger.d(GoogleSheets.class.getSimpleName(), e.getMessage(), e);
+            Logger.d(GoogleSheetsModel.class.getSimpleName(), e.getMessage(), e);
         }
         return null;
     }
+    public Sheets getServiceSheet(GoogleCredentials credentials) {
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+        return new Sheets.Builder(new NetHttpTransport(),
+                GsonFactory.getDefaultInstance(),
+                requestInitializer)
+                .setApplicationName("fillDataSpreadsheet")
+                .build();
+    }
 
-    public static String createSpreadsheet(String title) {
+    public String createSpreadsheet(String title) {
         try {
             GoogleCredentials credentials = getAuthorize();
             HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
@@ -63,7 +71,7 @@ public class GoogleSheets {
 
             String sheetsID = response1.getSheets ().get (0).getProperties ().getTitle();
 
-            shareSpreadsheet(spreadsheet.getSpreadsheetId());
+            shareSpreadsheet(credentials, spreadsheet.getSpreadsheetId());
             return spreadsheet.getSpreadsheetId();
 
         } catch (Exception e) {
@@ -73,16 +81,8 @@ public class GoogleSheets {
         return null;
     }
 
-    public static void reNameSheet(String spreadsheetId) {
+    public static void reNameSheet(Sheets sheetsService , String spreadsheetId) {
         try {
-            GoogleCredentials credentials = getAuthorize();
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-
-            Sheets sheetsService = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("newSheetSpreadsheet")
-                    .build();
             UpdateSheetPropertiesRequest updateSheetPropertiesRequest = new UpdateSheetPropertiesRequest()
                     .setProperties(new SheetProperties().setTitle("New Sheet Name"))
                     .setFields("title");
@@ -99,16 +99,8 @@ public class GoogleSheets {
         }
     }
 
-    public static void newSheet(String spreadsheetId) {
+    public static void newSheet(Sheets sheetsService, String spreadsheetId) {
         try {
-            GoogleCredentials credentials = getAuthorize();
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-
-            Sheets sheetsService = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("newSheetSpreadsheet")
-                    .build();
 
             // Define the request to add a new sheet
             AddSheetRequest addSheetRequest = new AddSheetRequest()
@@ -127,16 +119,9 @@ public class GoogleSheets {
         }
     }
 
-    public static ValueRange getData(GoogleCredentials credentials, String spreadsheetId, String range) {
+    public ValueRange getData(Sheets service, String spreadsheetId, String range) {
         try {
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-            Sheets service = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("getDataSpreadsheet")
-                    .build();
-
-//            String range = "A1:F10";
+            wait(500, TimeUnit.MILLISECONDS);
             ValueRange response = service.spreadsheets().values().get(spreadsheetId, range).execute();
             List<List<Object>> values = response.getValues();
             if (values == null || values.isEmpty()) {
@@ -151,17 +136,9 @@ public class GoogleSheets {
         return null;
     }
 
-    public static void fillAllData(String spreadsheetId, List<List<Object>> data) {
+    public void fillAllData(Sheets service, String spreadsheetId, List<List<Object>> data) {
         try {
-            GoogleCredentials credentials = getAuthorize();
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-
-            Sheets service = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("fillDataSpreadsheet")
-                    .build();
-
+            wait(500, TimeUnit.MILLISECONDS);
             Spreadsheet response1 = service.spreadsheets().get(spreadsheetId).setIncludeGridData(false).execute();
 
             String sheetsID = response1.getSheets().get(0).getProperties().getTitle();
@@ -175,22 +152,15 @@ public class GoogleSheets {
         }
     }
 
-    public static void fillData(GoogleCredentials credentials, String spreadsheetId, String... data) {
-        fillData(credentials, spreadsheetId, Arrays.asList(data));
+    public void fillData(Sheets service, String spreadsheetId, String... data) {
+        fillData(service, spreadsheetId, Arrays.asList(data));
     }
 
-    public static void fillData(GoogleCredentials credentials, String spreadsheetId, List<Object> data) {
+    public void fillData(Sheets service, String spreadsheetId, List<Object> data) {
         try {
+            wait(500, TimeUnit.MILLISECONDS);
             List<List<Object>> dataImport = new ArrayList<>();
             dataImport.add(data);
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-
-            Sheets service = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("fillDataSpreadsheet")
-                    .build();
-
             Spreadsheet response1 = service.spreadsheets().get(spreadsheetId).setIncludeGridData(false).execute();
 
             String sheetsID = response1.getSheets().get(0).getProperties().getTitle();
@@ -204,16 +174,9 @@ public class GoogleSheets {
         }
     }
 
-    public static void fillData(GoogleCredentials credentials, String spreadsheetId, int rowNumber, int columnNumber , String value) {
+    public void fillData(Sheets service, String spreadsheetId, int rowNumber, int columnNumber , String value) {
         try {
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-
-            Sheets service = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("fillDataSpreadsheet")
-                    .build();
-
+            wait(500, TimeUnit.MILLISECONDS);
             Spreadsheet spreadsheet = service.spreadsheets().get(spreadsheetId).setIncludeGridData(false).execute();
             String sheetName = spreadsheet.getSheets().get(0).getProperties().getTitle();
             int sheetID = spreadsheet.getSheets().get(0).getProperties().getSheetId();
@@ -241,15 +204,8 @@ public class GoogleSheets {
         }
     }
 
-    public static void clearAllData(GoogleCredentials credentials, String spreadsheetId, String range) {
+    public void clearAllData(Sheets service, String spreadsheetId, String range) {
         try{
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-            Sheets service = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("fillDataSpreadsheet")
-                    .build();
-
             Spreadsheet spreadsheet = service.spreadsheets().get(spreadsheetId).setIncludeGridData(false).execute();
             String sheetName = spreadsheet.getSheets().get(0).getProperties().getTitle();
             int sheetID = spreadsheet.getSheets().get(0).getProperties().getSheetId();
@@ -262,15 +218,10 @@ public class GoogleSheets {
 
     }
 
-    public static void insertNewColumn(GoogleCredentials credentials, String spreadsheetId, int columnIndex) {
+    public void insertNewColumn(Sheets service, String spreadsheetId, int columnIndex) {
         // Tạo một ColumnInsertRequest để chèn cột mới
         try {
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-            Sheets service = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("fillDataSpreadsheet")
-                    .build();
+
             Spreadsheet spreadsheet = service.spreadsheets().get(spreadsheetId).setIncludeGridData(false).execute();
             int sheetID = spreadsheet.getSheets().get(0).getProperties().getSheetId();
             List<Request> requests = new ArrayList<>();
@@ -291,15 +242,9 @@ public class GoogleSheets {
         }
     }
 
-    public void deleteColumn(GoogleCredentials credentials, String spreadsheetId, int columnIndex) {
+    public void deleteColumn(Sheets service, String spreadsheetId, int columnIndex) {
         // Tạo một DeleteDimensionRequest để xóa cột
         try {
-            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-            Sheets service = new Sheets.Builder(new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance(),
-                    requestInitializer)
-                    .setApplicationName("fillDataSpreadsheet")
-                    .build();
             Spreadsheet spreadsheet = service.spreadsheets().get(spreadsheetId).setIncludeGridData(false).execute();
 
             int sheetID = spreadsheet.getSheets().get(0).getProperties().getSheetId();
@@ -322,9 +267,8 @@ public class GoogleSheets {
         }
     }
 
-    public static void shareSpreadsheet(String spreadsheetId) {
+    public void shareSpreadsheet(GoogleCredentials credentials, String spreadsheetId) {
         try {
-            GoogleCredentials credentials = getAuthorize();
             HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
             Drive drive = new Drive.Builder(new NetHttpTransport(),
                     GsonFactory.getDefaultInstance(), requestInitializer)
@@ -398,5 +342,18 @@ public class GoogleSheets {
         }
     }
 
+    public String getCell(int rowNumber, int columnNumber) {
+        String column = "A,B,C,D,E,F,G,H,I,KL,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
+        return column.split(",")[columnNumber] + rowNumber;
+    }
 
+    private static void wait(long time, TimeUnit timeUnit) {
+        if (time > 0) {
+            try {
+                Thread.sleep(timeUnit.toMillis(time));
+            } catch (InterruptedException e) {
+                Logger.warning(TAG, "InterruptedException: " + e.getMessage());
+            }
+        }
+    }
 }

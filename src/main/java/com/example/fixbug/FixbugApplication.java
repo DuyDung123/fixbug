@@ -1,6 +1,6 @@
 package com.example.fixbug;
 
-import com.example.fixbug.api.line.ILineService;
+import com.coupang.openapi.sdk.Hmac;
 import com.example.fixbug.api.line.LineStepLmeModel;
 import com.example.fixbug.api.line.reponse.CsvExport;
 import com.example.fixbug.api.mail.IMailService;
@@ -9,14 +9,12 @@ import com.example.fixbug.api.rakuten.IRakutenService;
 import com.example.fixbug.api.rakuten.IchibaResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
-import com.example.fixbug.elasticsearch.EsService;
-import com.example.fixbug.patternbridge.demo.DemoBridge;
-import com.example.fixbug.google.GoogleSheets;
+import com.example.fixbug.google.GoogleSheetsModel;
 import com.example.fixbug.objects.EmailObject;
-import com.example.fixbug.patternbuilder.fastfoodstore.director.Client;
 import com.example.fixbug.utils.EmailModel;
+import com.example.fixbug.utils.Logger;
+import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.google.auth.oauth2.GoogleCredentials;
 import okhttp3.ResponseBody;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -24,9 +22,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import com.coupang.openapi.sdk.Hmac;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.util.TextUtils;
+import org.mockito.internal.matchers.Null;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,33 +48,43 @@ public class FixbugApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         String spreadsheetId = "1EdxrJH_mltN14RPqGEK2h7Ocogp6y7V6SKVO5egbI_4";
 //        ValueRange data = GoogleSheets.getData("1EdxrJH_mltN14RPqGEK2h7Ocogp6y7V6SKVO5egbI_4", "A1:Z1000");
-        CsvExport response = new LineStepLmeModel().getListDataExport("1559", "hoangthangdt2@gmail.com");
-        GoogleCredentials credentials = GoogleSheets.getAuthorize();
+        CsvExport response = new LineStepLmeModel().getListDataExport("1599", "thanhntp142@gmail.com");
+        GoogleSheetsModel googleSheetsModel = new GoogleSheetsModel();
+        Sheets sheets = googleSheetsModel.getServiceSheet(googleSheetsModel.getAuthorize());
         if (response.getData() != null) {
             List<Object> headers = response.getData().getHeads().get(1);
             if (headers != null) {
-                ValueRange data = GoogleSheets.getData(credentials, spreadsheetId, "A1:Z1");
+                ValueRange data = googleSheetsModel.getData(sheets, spreadsheetId, "A1:Z1");
                 if (data == null || data.getValues() == null || data.getValues().isEmpty()) {
                     //title
-                    GoogleSheets.fillData(credentials, spreadsheetId, headers);
+                    googleSheetsModel.fillData(sheets, spreadsheetId, headers);
                 } else {
                     if (data.getValues().get(data.getValues().size() -1).size() != headers.size()) {
-                        GoogleSheets.clearAllData(credentials, spreadsheetId, "A1:Z1000");
-                        GoogleSheets.fillData(credentials, spreadsheetId, headers);
+                        googleSheetsModel.clearAllData(sheets, spreadsheetId, "A1:Z1000");
+                        googleSheetsModel.fillData(sheets, spreadsheetId, headers);
                     }
                 }
             }
             List<List<Object>> listRowCsv = response.getData().getDataExport();
             if (listRowCsv != null) {
-                ValueRange data = GoogleSheets.getData(credentials, spreadsheetId, "A2:Z1000");
-                if (data == null || data.getValues() == null || data.getValues().isEmpty()) {
-                    for (int i = 0; i < listRowCsv.size(); i++) {
-                        for (int j = 0; j < listRowCsv.get(i).size(); j++) { // column
-                            int row = i + 2; //tránh cái tiêu đề ra
-                            int column = j + 1;
-                            GoogleSheets.fillData(credentials, spreadsheetId, row, column, listRowCsv.get(i).get(j) == null ? null : listRowCsv.get(i).get(j) + "");
+                List<List<Object>> dataCsv = new ArrayList<>();
+                for (List<Object> objects : listRowCsv) {
+                    List<Object> objectListValue = new ArrayList<>();
+                    for (Object object : objects) {
+                        if (object == null) {
+                            objectListValue.add("");
+                        } else if (object instanceof Number) {
+                            objectListValue.add(String.valueOf(object));
+                        } else {
+                            objectListValue.add(object);
                         }
                     }
+                    dataCsv.add(objectListValue);
+                }
+                listRowCsv = dataCsv;
+                ValueRange data = googleSheetsModel.getData(sheets, spreadsheetId, "A2:Z1000");
+                if (data == null || data.getValues() == null || data.getValues().isEmpty()) {
+                    googleSheetsModel.fillAllData(sheets, spreadsheetId, listRowCsv);
                 } else {
                     int rowNumberGoogleSheet = data.getValues().size();
                     int nextRowNew = data.getValues().size();
@@ -91,24 +99,37 @@ public class FixbugApplication implements CommandLineRunner {
                             }
                         }
                         if (check) {
+                            int columnCell = data.getValues().get(i).size();
                             for (int k = 0; k < listRowCsv.get(i).size(); k++) {
-                                if (!listRowCsv.get(i).get(k).toString().equals(data.getValues().get(i).get(k).toString())) {
-                                    int column = k + 1;
-                                    GoogleSheets.fillData(credentials, spreadsheetId, row, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
+                                if (listRowCsv.get(i).get(k) != null && columnCell > k) {
+                                    if (!listRowCsv.get(i).get(k).toString().equals(data.getValues().get(i).get(k).toString())) {
+                                        int column = k + 1;
+                                        googleSheetsModel.fillData(sheets, spreadsheetId, row, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
+                                    }
+                                }  else if (listRowCsv.get(i).get(k) == null && columnCell > k) {
+                                    if (!TextUtils.isEmpty(data.getValues().get(i).get(k).toString())) {
+                                        int column = k + 1;
+                                        googleSheetsModel.fillData(sheets, spreadsheetId, row, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
+                                    }
+                                } else if (listRowCsv.get(i).get(k) != null) {
+                                    if (!TextUtils.isEmpty(listRowCsv.get(i).get(k).toString())) {
+                                        int column = k + 1;
+                                        googleSheetsModel.fillData(sheets, spreadsheetId, row, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
+                                    }
                                 }
                             }
                         } else {
                             for (int k = 0; k < listRowCsv.get(i).size(); k++) {
                                 int rowNew = nextRowNew + 2;
                                 int column = k + 1;
-                                GoogleSheets.fillData(credentials, spreadsheetId, rowNew, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
+                                googleSheetsModel.fillData(sheets, spreadsheetId, rowNew, column, listRowCsv.get(i).get(k) == null ? null : listRowCsv.get(i).get(k) + "");
                             }
                             nextRowNew ++;
                         }
                     }
                 }
             }
-            System.out.println("end");
+            Logger.info("", "END");
         }
     }
 
