@@ -127,6 +127,12 @@
             <version>2.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.bitcoinj</groupId>
+            <artifactId>bitcoinj-core</artifactId>
+            <version>0.16.1</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty -->
         <dependency>

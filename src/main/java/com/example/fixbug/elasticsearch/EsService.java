@@ -1,5 +1,7 @@
 package com.example.fixbug.elasticsearch;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -15,12 +17,16 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class EsService {
@@ -83,8 +89,33 @@ public class EsService {
 
         for (SearchHit hit : response.getHits().getHits()) {
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            System.out.println(sourceAsMap.toString());
+            System.out.println(new Gson().toJson(sourceAsMap));
             // Process each document source here
+        }
+    }
+
+    public static List<SearchHit> searchDocuments(RestHighLevelClient client, String doc, QueryBuilder queryBuilder) throws IOException {
+        return searchDocuments(client, doc, queryBuilder, 0, 1000, new ArrayList<>());
+    }
+
+    public static List<SearchHit> searchDocuments(RestHighLevelClient client, String doc, QueryBuilder queryBuilder, int page, int pageSize, List<SearchHit> totalHit) throws IOException {
+
+        SearchRequest request = new SearchRequest(doc);
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.fetchSource(new String[]{"id_line_user"}, null);
+        sourceBuilder.query(queryBuilder);
+        request.source(sourceBuilder);
+        request.source().size(pageSize).from(page * pageSize); //starting from 0
+
+        SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+
+        SearchHit[] searchHits = response.getHits().getHits();
+        totalHit.addAll(Arrays.asList(searchHits));
+
+        if (searchHits.length == pageSize) {
+            return searchDocuments(client, doc, queryBuilder, page + 1, pageSize, totalHit);
+        } else {
+            return totalHit;
         }
     }
 }

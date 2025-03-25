@@ -1,16 +1,27 @@
 package com.example.fixbug.api.requesthelper;
+import com.example.fixbug.api.instagram.apiservice.IInstagramService;
 import com.example.fixbug.api.mail.response.MailRefreshTokenResponse;
+import com.example.fixbug.utils.Constants;
 import com.example.fixbug.utils.Logger;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import okhttp3.OkHttpClient;
+import org.apache.http.util.TextUtils;
+import retrofit2.*;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public final class RequestHelper {
     private static final String TAG = RequestHelper.class.getSimpleName();
 
+    private IInstagramService instagramService;
+
     private RequestHelper() {
+        instagramService = getServiceRetrofit(Constants.HOST_API_INSTAGRAM, IInstagramService.class, GsonConverterFactory.create(), okHttpClient);
+    }
+
+    public IInstagramService getInstagramService() {
+        return instagramService;
     }
 
     public static RequestHelper getInstance() {
@@ -136,5 +147,27 @@ public final class RequestHelper {
             Logger.error(TAG, ("#executeSyncReques Exception: " + request.request().url() + " - " + e.getMessage()));
         }
         return null;
+    }
+
+    private static OkHttpClient okHttpClient = new OkHttpClient.Builder().followSslRedirects(false)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .followRedirects(false).build();
+
+    public <T> T getServiceRetrofit(String baseUrl, Class<T> classService, Converter.Factory converter, OkHttpClient okHttpClient) {
+        Retrofit.Builder builder = new Retrofit.Builder();
+        if (okHttpClient == null) {
+            builder = builder.client(RequestHelper.okHttpClient);
+        } else {
+            builder = builder.client(okHttpClient);
+        }
+        if (!TextUtils.isEmpty(baseUrl)) {
+            builder = builder.baseUrl(baseUrl);
+        }
+        if (converter != null)
+            builder = builder.addConverterFactory(converter);
+        Retrofit retrofit = builder.build();
+        return retrofit.create(classService);
     }
 }

@@ -150,7 +150,9 @@ public class EmailModel {
             }).start();
             return mailList;
         } catch (Exception e) {
-            //logger.error(String.format("#readEmail Exception email: %s - error: %s ", email, e));
+            e.printStackTrace();
+//            logger.error(String.format("#readEmail Exception email: %s - error: %s ", email, e));
+            System.out.println(String.format("#readEmail Exception email: %s - error: %s ", email, e.getMessage()));
         }
         return new ArrayList<>();
     }

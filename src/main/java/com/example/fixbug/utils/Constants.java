@@ -66,4 +66,6 @@ public final class Constants {
     public static final int JOB_ACTION_SEND_MESSAGE_YAHOO_BUYER_NOT_PAID = 300;
     public static final int JOB_ACTION_SEND_MESSAGE_YAHOO_BUYER_PAID = 301;
     public static final int JOB_ACTION_SEND_MESSAGE_YAHOO_BUYER_REVIEWS = 302;
+    public static final String INSTAGRAM_VERSION_API = "v16.0";
+    public static final String HOST_API_INSTAGRAM = "https://graph.facebook.com";
 }

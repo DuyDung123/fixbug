@@ -9,6 +9,9 @@ import com.example.fixbug.api.rakuten.IRakutenService;
 import com.example.fixbug.api.rakuten.IchibaResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
+import com.example.fixbug.btc.BitcoinWalletCreator;
+import com.example.fixbug.elasticsearch.EsLineUserObjectKey;
+import com.example.fixbug.elasticsearch.EsService;
 import com.example.fixbug.google.GoogleSheetsModel;
 import com.example.fixbug.objects.EmailObject;
 import com.example.fixbug.utils.EmailModel;
@@ -24,6 +27,21 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.util.TextUtils;
+
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.script.Script;
+import org.bitcoinj.wallet.Wallet;
+import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.store.MemoryBlockStore;
+import org.bitcoinj.store.BlockStore;
+import org.bitcoinj.store.BlockStoreException;
+import org.bitcoinj.core.Context;
+
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.mockito.internal.matchers.Null;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,7 +53,12 @@ import javax.mail.search.SearchTerm;
 import java.io.*;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class FixbugApplication implements CommandLineRunner {
@@ -46,6 +69,48 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        BitcoinWalletCreator bitcoinWalletCreator = new BitcoinWalletCreator();
+        bitcoinWalletCreator.createBtc();
+    }
+
+    void es() {
+        try {
+            readMail1();
+            RestHighLevelClient restHighLevelClient = EsService.createClient("localhost", 9200, "wm", "WSS2023@");
+//
+//            BoolQueryBuilder builder = QueryBuilders.boolQuery();
+//            builder.must(QueryBuilders.matchQuery("_id", "542@5751"));
+//            List<SearchHit> searchHits = EsService.searchDocuments(restHighLevelClient, "bot_line_user", builder);
+
+            BoolQueryBuilder builder = QueryBuilders.boolQuery();
+            builder.must(QueryBuilders.matchQuery(EsLineUserObjectKey.ID_LINE_USER, 5655));
+            List<SearchHit> searchHits = EsService.searchDocuments(restHighLevelClient, "bot_line_user", builder);
+
+            EsService.searchDocuments(restHighLevelClient, "bot_line_user", "_id", "542@5751");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static long getLongFromString(String dateString, String format) {
+        DateFormat df = new SimpleDateFormat(format);
+        Date outDate;
+        try {
+            outDate = df.parse(dateString);
+            return outDate.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    private static final String HOST = "api-gateway.coupang.com";
+    private static final int PORT = 443;
+    private static final String SCHEMA = "https";
+    //replace with your own accessKey
+    private static final String ACCESS_KEY = "92e6a793-384e-4680-9eb7-0fa1ae911b92";
+    //replace with your own secretKey
+    private static final String SECRET_KEY = "d381156e3b8de94668b9e0067c90cb33302b3803";
+
+    public void testGoogleSheet() {
         String spreadsheetId = "1EdxrJH_mltN14RPqGEK2h7Ocogp6y7V6SKVO5egbI_4";
 //        ValueRange data = GoogleSheets.getData("1EdxrJH_mltN14RPqGEK2h7Ocogp6y7V6SKVO5egbI_4", "A1:Z1000");
         CsvExport response = new LineStepLmeModel().getListDataExport("1599", "thanhntp142@gmail.com");
@@ -132,14 +197,6 @@ public class FixbugApplication implements CommandLineRunner {
             Logger.info("", "END");
         }
     }
-
-    private static final String HOST = "api-gateway.coupang.com";
-    private static final int PORT = 443;
-    private static final String SCHEMA = "https";
-    //replace with your own accessKey
-    private static final String ACCESS_KEY = "92e6a793-384e-4680-9eb7-0fa1ae911b92";
-    //replace with your own secretKey
-    private static final String SECRET_KEY = "d381156e3b8de94668b9e0067c90cb33302b3803";
 
     public static void testAPI(String mt, String pathOutput){
         System.out.println("run");
@@ -261,11 +318,11 @@ public class FixbugApplication implements CommandLineRunner {
     }
 
     private void readMail1(){
-        String host = "mail11.onamae.ne.jp";
+        String host = "imap.gmail.com";
         String port = "993";
         String mailStoreType = "imap";
-        String email = "test@melonmazon.net";
-        String password = "test201501!";
+        String email = "kuro836@gmail.com";
+        String password = "mftlmmowcwtsiixr";
         Date lastDate = new Timestamp(1642411372);
         SearchTerm startDateTearm = new ReceivedDateTerm(ComparisonTerm.GE, lastDate);
         List<EmailObject> emailObjects = EmailModel.readEmail(host, port, email, password, startDateTearm);
