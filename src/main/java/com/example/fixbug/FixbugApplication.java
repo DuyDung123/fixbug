@@ -69,8 +69,11 @@ public class FixbugApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        String addressFromKey = "tortoise omit divert used manage elephant spawn rule hospital burden session satoshi";
+        String addressTo = "1KjNmSw7MM3FhZWpR3coi8GBgJfSKuY93h";
+        String key = "L557pLbaWWnJEqVR4MvtWz6BozgBxiRJ524WEFxwVT8LMWfdmooX";
         BitcoinWalletCreator bitcoinWalletCreator = new BitcoinWalletCreator();
-        bitcoinWalletCreator.createBtc();
+        bitcoinWalletCreator.giaoDichVi(addressFromKey, addressTo);
     }
 
     void es() {
