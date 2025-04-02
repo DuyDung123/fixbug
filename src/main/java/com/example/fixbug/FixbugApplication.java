@@ -1,6 +1,6 @@
 package com.example.fixbug;
 
-import com.coupang.openapi.sdk.Hmac;
+
 import com.example.fixbug.api.line.LineStepLmeModel;
 import com.example.fixbug.api.line.reponse.CsvExport;
 import com.example.fixbug.api.mail.IMailService;
@@ -28,23 +28,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.util.TextUtils;
 
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.script.Script;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.store.MemoryBlockStore;
-import org.bitcoinj.store.BlockStore;
-import org.bitcoinj.store.BlockStoreException;
-import org.bitcoinj.core.Context;
-
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.mockito.internal.matchers.Null;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.mail.search.ComparisonTerm;
@@ -56,24 +44,31 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class FixbugApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
-        SpringApplication.run(FixbugApplication.class, args);
+//        SpringApplication.run(FixbugApplication.class, args);
+        String addressFromKey = "tortoise omit divert used manage elephant spawn rule hospital burden session satoshi";
+//        String addressFromKey = "into mammal cube basket shoe extend recipe shop cook remove rotate style";
+        String addressTo = "1KjNmSw7MM3FhZWpR3coi8GBgJfSKuY93h";
+        String key = "L557pLbaWWnJEqVR4MvtWz6BozgBxiRJ524WEFxwVT8LMWfdmooX";
+        BitcoinWalletCreator bitcoinWalletCreator = new BitcoinWalletCreator();
+//        bitcoinWalletCreator.createBtc();
+        bitcoinWalletCreator.giaoDichVi(addressFromKey, addressTo);
+//        bitcoinWalletCreator.connect();
     }
 
     @Override
     public void run(String... args) throws Exception {
-        String addressFromKey = "tortoise omit divert used manage elephant spawn rule hospital burden session satoshi";
-        String addressTo = "1KjNmSw7MM3FhZWpR3coi8GBgJfSKuY93h";
-        String key = "L557pLbaWWnJEqVR4MvtWz6BozgBxiRJ524WEFxwVT8LMWfdmooX";
-        BitcoinWalletCreator bitcoinWalletCreator = new BitcoinWalletCreator();
-        bitcoinWalletCreator.giaoDichVi(addressFromKey, addressTo);
+//        String addressFromKey = "tortoise omit divert used manage elephant spawn rule hospital burden session satoshi";
+////        String addressFromKey = "into mammal cube basket shoe extend recipe shop cook remove rotate style";
+//        String addressTo = "1KjNmSw7MM3FhZWpR3coi8GBgJfSKuY93h";
+//        String key = "L557pLbaWWnJEqVR4MvtWz6BozgBxiRJ524WEFxwVT8LMWfdmooX";
+//        BitcoinWalletCreator bitcoinWalletCreator = new BitcoinWalletCreator();
+////        bitcoinWalletCreator.createBtc();
+//        bitcoinWalletCreator.giaoDichVi(addressFromKey, addressTo);
     }
 
     void es() {
@@ -201,65 +196,65 @@ public class FixbugApplication implements CommandLineRunner {
         }
     }
 
-    public static void testAPI(String mt, String pathOutput){
-        System.out.println("run");
-        String method = mt;
-        //replace with your own vendorId
-        String path = pathOutput;
-        CloseableHttpClient client = null;
-        try {
-            //create client
-            client = HttpClients.createDefault();
-            //build uri
-            URIBuilder uriBuilder = new URIBuilder()
-                    .setPath(path);
-
-            /********************************************************/
-            //authorize, demonstrate how to generate hmac signature here
-            String authorization = Hmac.generate(method, uriBuilder.build().toString(), SECRET_KEY, ACCESS_KEY);
-            //print out the hmac key
-            System.out.println(authorization);
-            /********************************************************/
-
-            uriBuilder.setScheme(SCHEMA).setHost(HOST).setPort(PORT);
-            HttpGet get = new HttpGet(uriBuilder.build().toString());
-            /********************************************************/
-            // set header, demonstarte how to use hmac signature here
-            get.addHeader("Authorization", authorization);
-            /********************************************************/
-            get.addHeader("content-type", "application/json");
-            CloseableHttpResponse response = null;
-            try {
-                //execute get request
-                response = client.execute(get);
-                //print result
-                System.out.println("status code:" + response.getStatusLine().getStatusCode());
-                System.out.println("status message:" + response.getStatusLine().getReasonPhrase());
-                HttpEntity entity = response.getEntity();
-                System.out.println("result:" + EntityUtils.toString(entity));
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (response != null) {
-                    try {
-                        response.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (client != null) {
-                try {
-                    client.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+//    public static void testAPI(String mt, String pathOutput){
+//        System.out.println("run");
+//        String method = mt;
+//        //replace with your own vendorId
+//        String path = pathOutput;
+//        CloseableHttpClient client = null;
+//        try {
+//            //create client
+//            client = HttpClients.createDefault();
+//            //build uri
+//            URIBuilder uriBuilder = new URIBuilder()
+//                    .setPath(path);
+//
+//            /********************************************************/
+//            //authorize, demonstrate how to generate hmac signature here
+//            String authorization = Hmac.generate(method, uriBuilder.build().toString(), SECRET_KEY, ACCESS_KEY);
+//            //print out the hmac key
+//            System.out.println(authorization);
+//            /********************************************************/
+//
+//            uriBuilder.setScheme(SCHEMA).setHost(HOST).setPort(PORT);
+//            HttpGet get = new HttpGet(uriBuilder.build().toString());
+//            /********************************************************/
+//            // set header, demonstarte how to use hmac signature here
+//            get.addHeader("Authorization", authorization);
+//            /********************************************************/
+//            get.addHeader("content-type", "application/json");
+//            CloseableHttpResponse response = null;
+//            try {
+//                //execute get request
+//                response = client.execute(get);
+//                //print result
+//                System.out.println("status code:" + response.getStatusLine().getStatusCode());
+//                System.out.println("status message:" + response.getStatusLine().getReasonPhrase());
+//                HttpEntity entity = response.getEntity();
+//                System.out.println("result:" + EntityUtils.toString(entity));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            } finally {
+//                if (response != null) {
+//                    try {
+//                        response.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (client != null) {
+//                try {
+//                    client.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     public static int countByteJapan(String input) {
         try {
