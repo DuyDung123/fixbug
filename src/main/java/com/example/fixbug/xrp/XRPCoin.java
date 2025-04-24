@@ -12,8 +12,7 @@ import org.xrpl.xrpl4j.crypto.keys.*;
 import org.xrpl.xrpl4j.crypto.signing.SignatureService;
 import org.xrpl.xrpl4j.crypto.signing.SingleSignedTransaction;
 import org.xrpl.xrpl4j.crypto.signing.bc.BcSignatureService;
-import org.xrpl.xrpl4j.model.client.accounts.AccountInfoRequestParams;
-import org.xrpl.xrpl4j.model.client.accounts.AccountInfoResult;
+import org.xrpl.xrpl4j.model.client.accounts.*;
 import org.xrpl.xrpl4j.model.client.common.LedgerIndex;
 import org.xrpl.xrpl4j.model.client.common.LedgerSpecifier;
 import org.xrpl.xrpl4j.model.client.fees.FeeResult;
@@ -21,17 +20,46 @@ import org.xrpl.xrpl4j.model.client.ledger.LedgerRequestParams;
 import org.xrpl.xrpl4j.model.client.transactions.SubmitResult;
 import org.xrpl.xrpl4j.model.client.transactions.TransactionRequestParams;
 import org.xrpl.xrpl4j.model.client.transactions.TransactionResult;
-import org.xrpl.xrpl4j.model.transactions.Address;
+import org.xrpl.xrpl4j.model.transactions.*;
 import org.xrpl.xrpl4j.model.transactions.Payment;
 import org.xrpl.xrpl4j.model.transactions.XAddress;
 import org.xrpl.xrpl4j.model.transactions.XrpCurrencyAmount;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class XRPCoin {
     //https://github.com/XRPLF/xrpl4j-sample/blob/main/src/main/java/org/xrpl/xrpl4j/samples/SendXrp.java
     //https://xrpl.org/resources/dev-tools/xrp-faucets
     //https://xrpl.org/docs/tutorials/java/build-apps/get-started
+
+    public static void fetchDeposits() throws Exception {
+        XrplClient xrplClient = new XrplClient(HttpUrl.get("https://s.altnet.rippletest.net:51234/"));
+
+        AccountTransactionsRequestParams params = AccountTransactionsRequestParams.unboundedBuilder()
+                .account(Address.of("rwx1DG7B3NzXdSbAvNs8ZWVCvtf7nU65Zx"))
+                .limit(UnsignedInteger.valueOf(10))
+                .build();
+
+        AccountTransactionsResult result = xrplClient.accountTransactions(params);
+
+        for (AccountTransactionsTransactionResult transaction : result.transactions()) {
+            Transaction tx = transaction.resultTransaction().transaction();
+            if (tx instanceof Payment) {
+                Payment payment = (Payment) tx;
+
+                Optional<UnsignedInteger> tagOpt = payment.destinationTag();
+                if (tagOpt.isPresent()) {
+                    int userTag = tagOpt.get().intValue();
+                    System.out.println("User tag: " + userTag);
+                    System.out.println("Amount: " + payment.amount());
+                    System.out.println("From: " + payment.account().value());
+                    System.out.println("Transaction Hash: " + transaction.resultTransaction().hash());
+                    System.out.println("-------------------------------------");
+                }
+            }
+        }
+    }
 
     public static void sendXrpWithTag() throws Exception {
         // 1. Kết nối tới XRP Mainnet
@@ -129,9 +157,9 @@ public class XRPCoin {
         Address destination = Address.of("rwx1DG7B3NzXdSbAvNs8ZWVCvtf7nU65Zx"); // thay ví khác nếu bạn muốn
         Payment payment = Payment.builder()
                 .account(classicAddress)
-                .amount(XrpCurrencyAmount.ofXrp(BigDecimal.valueOf(1))) // gửi 1 XRP
+                .amount(XrpCurrencyAmount.ofXrp(BigDecimal.valueOf(20))) // gửi 1 XRP
                 .destination(destination)
-                .destinationTag(UnsignedInteger.valueOf(123456789))
+                .destinationTag(UnsignedInteger.valueOf(11223344))
                 .sequence(sequence)
                 .fee(fee)
                 .signingPublicKey(keyPair.publicKey())

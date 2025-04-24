@@ -60,7 +60,7 @@ public class FixbugApplication implements CommandLineRunner {
 ////        bitcoinWalletCreator.createBtc();
 //        bitcoinWalletCreator.transactionAddressCoin(addressFromKey, addressTo);
 ////        bitcoinWalletCreator.connect();
-        XRPCoin.sendXrpWithTag();
+        XRPCoin.fetchDeposits();
     }
 
     @Override
