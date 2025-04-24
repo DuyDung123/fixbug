@@ -9,13 +9,15 @@ import com.example.fixbug.api.rakuten.IRakutenService;
 import com.example.fixbug.api.rakuten.IchibaResponse;
 import com.example.fixbug.api.requesthelper.RequestHelper;
 import com.example.fixbug.api.requesthelper.ResponseAPI;
-import com.example.fixbug.btc.BitcoinWalletCreator;
+//import com.example.fixbug.btc.BitcoinWalletCreator;
 import com.example.fixbug.elasticsearch.EsLineUserObjectKey;
 import com.example.fixbug.elasticsearch.EsService;
 import com.example.fixbug.google.GoogleSheetsModel;
+import com.example.fixbug.ltc.LTCCoin;
 import com.example.fixbug.objects.EmailObject;
 import com.example.fixbug.utils.EmailModel;
 import com.example.fixbug.utils.Logger;
+import com.example.fixbug.xrp.XRPCoin;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import okhttp3.ResponseBody;
@@ -48,16 +50,17 @@ import java.util.*;
 @SpringBootApplication
 public class FixbugApplication implements CommandLineRunner {
 
-    public static void main(String[] args) {
-//        SpringApplication.run(FixbugApplication.class, args);
-        String addressFromKey = "tortoise omit divert used manage elephant spawn rule hospital burden session satoshi";
-//        String addressFromKey = "into mammal cube basket shoe extend recipe shop cook remove rotate style";
-        String addressTo = "1KjNmSw7MM3FhZWpR3coi8GBgJfSKuY93h";
-        String key = "L557pLbaWWnJEqVR4MvtWz6BozgBxiRJ524WEFxwVT8LMWfdmooX";
-        BitcoinWalletCreator bitcoinWalletCreator = new BitcoinWalletCreator();
-//        bitcoinWalletCreator.createBtc();
-        bitcoinWalletCreator.giaoDichVi(addressFromKey, addressTo);
-//        bitcoinWalletCreator.connect();
+    public static void main(String[] args) throws Exception {
+////        SpringApplication.run(FixbugApplication.class, args);
+//        String addressFromKey = "dash knife erosion alter couple chicken wear master achieve aisle crumble object";
+////        String addressFromKey = "into mammal cube basket shoe extend recipe shop cook remove rotate style";
+//        String addressTo = "1KjNmSw7MM3FhZWpR3coi8GBgJfSKuY93h";
+//        String key = "L557pLbaWWnJEqVR4MvtWz6BozgBxiRJ524WEFxwVT8LMWfdmooX";
+//        BitcoinWalletCreator bitcoinWalletCreator = new BitcoinWalletCreator();
+////        bitcoinWalletCreator.createBtc();
+//        bitcoinWalletCreator.transactionAddressCoin(addressFromKey, addressTo);
+////        bitcoinWalletCreator.connect();
+        XRPCoin.sendXrpWithTag();
     }
 
     @Override
