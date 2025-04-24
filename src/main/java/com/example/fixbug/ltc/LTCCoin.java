@@ -65,6 +65,8 @@ public class LTCCoin {
 //    }
 
     public static void sendLTC() throws Exception {
+        //LTC Address: LdFQTQomXvcBhJ7urtSGFVVi374grsbPKm
+        //Private Key (WIF): TBamdTq2vvLbztDBmHmyewWovvYtFh8WgKz1E8SeD7KjU4fyHQjk
         // Private Key WIF (phải đúng Litecoin WIF bắt đầu bằng chữ 'T')
         DumpedPrivateKey dumpedPrivateKey = DumpedPrivateKey.fromBase58(params, "T3yLWcFNQdrp2MpRpVUTHTKcbo6JcJmKgmLnNFWk3emikwpv6rk2");
         ECKey senderKey = dumpedPrivateKey.getKey();

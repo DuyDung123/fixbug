@@ -3,6 +3,8 @@ package com.example.fixbug.xrp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.primitives.UnsignedInteger;
 import okhttp3.HttpUrl;
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.wallet.DeterministicSeed;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 import org.xrpl.xrpl4j.client.XrplClient;
 import org.xrpl.xrpl4j.client.faucet.FaucetClient;
@@ -25,7 +27,11 @@ import org.xrpl.xrpl4j.model.transactions.Payment;
 import org.xrpl.xrpl4j.model.transactions.XAddress;
 import org.xrpl.xrpl4j.model.transactions.XrpCurrencyAmount;
 
+import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class XRPCoin {
@@ -317,6 +323,46 @@ public class XRPCoin {
 
         // Print the result
         System.out.println(accountInfoResult);
+    }
+
+    public static void generateAccountInfo(String[] args) throws Exception {
+        // Generate 12-word mnemonic
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] entropy = new byte[16]; // 128 bits for 12 words
+        secureRandom.nextBytes(entropy);
+
+        MnemonicCode mnemonicCode = MnemonicCode.INSTANCE;
+        List<String> mnemonicWords = mnemonicCode.toMnemonic(entropy);
+        System.out.println("Mnemonic: " + String.join(" ", mnemonicWords));
+
+        // Create deterministic seed from mnemonic
+        String passphrase = "";  // Optional BIP39 passphrase
+        DeterministicSeed seed = new DeterministicSeed(mnemonicWords, null, passphrase, System.currentTimeMillis());
+        byte[] seedBytes = seed.getSeedBytes();
+
+        if (seedBytes == null) {
+            throw new RuntimeException("Seed bytes are null");
+        }
+
+        // Create KeyPair from seed using xrpl4j
+        Seed xrplSeed = Seed.ed25519Seed();
+        KeyPair keyPair = xrplSeed.deriveKeyPair();
+
+        Address classicAddress = keyPair.publicKey().deriveAddress();
+        System.out.println("Classic Address: " + classicAddress);
+        System.out.println("X-Address: " + AddressCodec.getInstance().classicAddressToXAddress(classicAddress, true));
+        System.out.println("Private Key: " + bytesToHex(keyPair.privateKey().value().toByteArray()));
+        System.out.println("Public Key: " + keyPair.publicKey().base16Value());
+
+        // Fund from Faucet and get Account Info
+        XrplClient xrplClient = new XrplClient(HttpUrl.get("https://s.altnet.rippletest.net:51234"));
+        FaucetClient faucetClient = FaucetClient.construct(HttpUrl.get("https://faucet.altnet.rippletest.net"));
+        faucetClient.fundAccount(FundAccountRequest.of(classicAddress));
+        System.out.println("Waiting for account to be funded...");
+        Thread.sleep(5000); // Wait for funding
+
+        AccountInfoResult accountInfo = xrplClient.accountInfo(AccountInfoRequestParams.of(classicAddress));
+        System.out.println("Account Info: " + accountInfo);
     }
 
     public static String bytesToHex(byte[] bytes) {
